@@ -2,6 +2,7 @@ package com.example.jsoup.jsoupdemo;
 
 import android.app.Application;
 
+import com.example.jsoup.jsoupdemo.base.CrashHandler;
 import com.wzgiceman.rxretrofitlibrary.retrofit_rx.RxRetrofitApp;
 import com.zhy.autolayout.config.AutoLayoutConifg;
 
@@ -15,6 +16,6 @@ public class MyBaseApplication extends Application {
         super.onCreate();
         AutoLayoutConifg.getInstance().useDeviceSize();
         RxRetrofitApp.init(this, BuildConfig.DEBUG);
-
+        CrashHandler.getInstance().init(this);
     }
 }

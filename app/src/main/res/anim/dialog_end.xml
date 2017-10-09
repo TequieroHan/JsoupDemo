@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <set xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <scale
+        android:duration="40"
+        android:fillAfter="false"
+        android:fromXScale="@dimen/base1dp"
+        android:fromYScale="@dimen/base1dp"
+        android:interpolator="@android:anim/accelerate_interpolator"
+        android:pivotX="100%"
+        android:pivotY="0"
+        android:toXScale="@dimen/base1dp"
+        android:toYScale="0.0dp" />
+
+
 </set>

@@ -57,11 +57,6 @@ public class MainActivity extends BaseMainActivity {
         List<String> list = new ArrayList<>();
         list.add("火锅");
         list.add("清时明月");
-        list.add("朝华白帝彩云间");
-        list.add("朝华白帝彩云间刚刚好");
-        list.add("朝华白帝彩云间火锅刚刚好");
-        list.add("朝华白帝彩云间天天刚刚好火锅");
-        list.add("朝华白帝彩云间");
         list.add("天天");
         list.add("刚刚好");
         list.add("刚刚好");
