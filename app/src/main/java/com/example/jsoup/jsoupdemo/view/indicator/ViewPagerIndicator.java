@@ -9,8 +9,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.Space;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -18,14 +16,13 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.LinearInterpolator;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.jsoup.jsoupdemo.R;
 import com.example.jsoup.jsoupdemo.utils.ScreenUtils;
-import com.example.jsoup.jsoupdemo.view.model.PositionData;
+import com.example.jsoup.jsoupdemo.view.indicator.model.PositionData;
 
 import java.util.ArrayList;
 import java.util.List;

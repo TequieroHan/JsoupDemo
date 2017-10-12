@@ -1,4 +1,4 @@
-package com.example.jsoup.jsoupdemo.view.model;
+package com.example.jsoup.jsoupdemo.view.indicator.model;
 
 /**
  * 保存指示器标题的坐标
