@@ -10,24 +10,19 @@
         android:layout_height="wrap_content"
         android:elevation="0dp">
 
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none">
+
 
             <com.example.jsoup.jsoupdemo.view.indicator.ViewPagerIndicator
                 android:id="@+id/my_pager_indicator"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/base100dp"
-                android:background="?colorPrimary"
-                android:orientation="horizontal" />
-        </HorizontalScrollView>
-
+                android:background="?colorPrimary"/>
     </android.support.design.widget.AppBarLayout>
 
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
+        android:background="@color/colorAccent"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

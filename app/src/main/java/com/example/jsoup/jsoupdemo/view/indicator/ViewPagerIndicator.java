@@ -9,6 +9,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.Space;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -16,11 +18,16 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.LinearInterpolator;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.jsoup.jsoupdemo.R;
+import com.example.jsoup.jsoupdemo.utils.ScreenUtils;
+import com.example.jsoup.jsoupdemo.view.model.PositionData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +35,7 @@ import java.util.List;
  * Created by Administrator on 2017/9/21.
  */
 
-public class ViewPagerIndicator extends LinearLayout {
+public class ViewPagerIndicator extends HorizontalScrollView {
 
     /**
      * 绘制三角形的画笔
@@ -62,7 +69,7 @@ public class ViewPagerIndicator extends LinearLayout {
     /**
      * 三角形的宽度为单个Tab的1/6
      */
-    private static final float mTable_Traigle_Width = 1.0f / 6;
+    private static final float mTable_Traigle_Width = 1.0f / 3;
 
     /**
      * 三角形的最大宽度
@@ -72,7 +79,7 @@ public class ViewPagerIndicator extends LinearLayout {
     /**
      * 初始时，三角形指示器的偏移量
      */
-    private int mInitTranslationX;
+    private float mInitTranslationX;
 
     /**
      * 手指滑动时的偏移量
@@ -109,13 +116,23 @@ public class ViewPagerIndicator extends LinearLayout {
     /**
      * 标题选中时的颜色
      */
-    private int mSelectTitleColor = Color.parseColor("#FAFAD2");
+    private int mSelectTitleColor = Color.parseColor("#ff0000");
     /**
      * 默认字体大小
      */
-    private float mDefaultTitleSize = getResources().getDimensionPixelSize(R.dimen.base16dp);
+    private float mDefaultTitleSize = getResources().getDimensionPixelSize(R.dimen.base14dp);
 
     private float mTitleSize = mDefaultTitleSize;
+    /**
+     * 保存指示器标题的坐标
+     */
+    private ArrayList<PositionData> mPositionData = new ArrayList<>();
+    /**
+     * 指示器总宽度
+     */
+    public int mCountWidth = 0;
+    private float mScrollPivotX = 0.5f;// 滚动中心点 0.0f - 1.0f
+    private LinearLayout mLinear;
 
     public ViewPagerIndicator(Context context) {
         this(context, null);
@@ -138,13 +155,19 @@ public class ViewPagerIndicator extends LinearLayout {
         }
         typedArray.recycle();
 
-
         mPaint = new Paint();
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(mPaintColor);
         mPaint.setTextSize(mTitleSize);
         mPaint.setAntiAlias(true);
         mPaint.setPathEffect(new CornerPathEffect(2.0f));//将Path线连接
+
+        mTriangleWidth = ScreenUtils.dip2px(context, 14);
+        mTriangleHeight = ScreenUtils.dip2px(context, 8);
+
+        mLinear = new LinearLayout(context);
+        mLinear.setOrientation(LinearLayout.HORIZONTAL);
+        mLinear.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     /**
@@ -156,27 +179,10 @@ public class ViewPagerIndicator extends LinearLayout {
     protected void dispatchDraw(Canvas canvas) {
         Log.e("TAG", "dispatchDraw ------>");
         canvas.save();
-        Log.e("TAG", "mInitTranslationX =" + mInitTranslationX + "mTranslationX = " + mTranslationX + "mInitTranslationX + mTranslationX = " + (mInitTranslationX + mTranslationX));
-        canvas.translate((mInitTranslationX * 2) + mTranslationX, getHeight() + 1);
+        canvas.translate(mInitTranslationX + mTranslationX - 20, getHeight() + 1);//创建TextView的时候给了Margins
         canvas.drawPath(mPath, mPaint);
         canvas.restore();
         super.dispatchDraw(canvas);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        Log.e("TAG", "onFinishInflate ------>");
-
-        int childCount = getChildCount();
-        if (childCount == 0) {
-            return;
-        }
-        for (int i = 0; i < childCount; i++) {
-            View v = getChildAt(i);
-            v.setLayoutParams(new LayoutParams(getScreenWidthPx() / mTableCount, ViewGroup.LayoutParams.WRAP_CONTENT, 0));
-        }
-        setItemClickEvent();
     }
 
     // 对外的ViewPager的回调接口
@@ -200,16 +206,54 @@ public class ViewPagerIndicator extends LinearLayout {
         this.onPageChangeListener = pageChangeListener;
     }
 
+
+    public static PositionData getImitativePositionData(List<PositionData> positionDataList, int index) {
+        if (index >= 0 && index <= positionDataList.size() - 1) { // 越界后，返回假的PositionData
+            return positionDataList.get(index);
+        } else {
+            PositionData result = new PositionData();
+            PositionData referenceData;
+            int offset;
+            if (index < 0) {
+                offset = index;
+                referenceData = positionDataList.get(0);
+            } else {
+                offset = index - positionDataList.size() + 1;
+                referenceData = positionDataList.get(positionDataList.size() - 1);
+            }
+            result.mLeft = referenceData.mLeft + offset * referenceData.width();
+            result.mTop = referenceData.mTop;
+            result.mRight = referenceData.mRight + offset * referenceData.width();
+            result.mBottom = referenceData.mBottom;
+            result.mContentLeft = referenceData.mContentLeft + offset * referenceData.width();
+            result.mContentTop = referenceData.mContentTop;
+            result.mContentRight = referenceData.mContentRight + offset * referenceData.width();
+            result.mContentBottom = referenceData.mContentBottom;
+            return result;
+        }
+    }
+
     public void setViewPager(ViewPager viewPager, int position) {
         this.mViewPager = viewPager;
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 Log.e("TAG", "onPageScrolled----------" + position);
+                if (mPositionData == null || mPositionData.isEmpty()) {
+                    return;
+                }
+                PositionData currentPosition = getImitativePositionData(mPositionData, position);
+                PositionData nextPosition = getImitativePositionData(mPositionData, position + 1);
+                float leftX = currentPosition.mLeft + (currentPosition.mRight - currentPosition.mLeft) / 2;
+                float rightX = nextPosition.mLeft + (nextPosition.mRight - nextPosition.mLeft) / 2;
+
+                mInitTranslationX = leftX + (rightX - leftX) * positionOffset;
+
                 onscroll(position, positionOffset);
                 if (onPageChangeListener != null) {
                     onPageChangeListener.onPageScrolled(position, positionOffset, positionOffsetPixels);
                 }
+
             }
 
             @Override
@@ -220,7 +264,6 @@ public class ViewPagerIndicator extends LinearLayout {
                 if (onPageChangeListener != null) {
                     onPageChangeListener.onPageSelected(position);
                 }
-
             }
 
             @Override
@@ -240,7 +283,7 @@ public class ViewPagerIndicator extends LinearLayout {
      * @param positon
      */
     protected void setSelectTitleText(int positon) {
-        View view = getChildAt(positon);
+        View view = mLinear.getChildAt(positon);
         if (view instanceof TextView) {
             ((TextView) view).setTextColor(mSelectTitleColor);
         }
@@ -250,14 +293,18 @@ public class ViewPagerIndicator extends LinearLayout {
      * 设置默认标题颜色
      */
     protected void setNormalTitleText() {
-        int childCount = getChildCount();
+        int childCount = mLinear.getChildCount();
+        if (childCount < 1) {
+            return;
+        }
         for (int i = 0; i < childCount; i++) {
-            View view = getChildAt(i);
+            View view = mLinear.getChildAt(i);
             if (view instanceof TextView) {
                 ((TextView) view).setTextColor(mNormalTitleColor);
             }
         }
     }
+
 
     /**
      * 偏移
@@ -266,24 +313,21 @@ public class ViewPagerIndicator extends LinearLayout {
      */
 
     protected void onscroll(int position, float offset) {
-//        mTranslationX = getScreenWidthPx() / mTableCount * (position + offset);
-        mTranslationX = getChildAt(position).getMeasuredWidth() * (position + offset);
-//        int tabWidth = getScreenWidthPx() / mTableCount;
-        int tabWidth = getChildAt(position).getMeasuredWidth();
-        float x = getChildAt(position).getX();
-        int scrollX = getChildAt(position).getScrollX();
-        int w = getChildAt(position).getMeasuredWidth();
-        float x1 = getMeasuredWidth();
-        int measuredWidth = getMeasuredWidth();
-        Log.e("TAG", "x =" + x1 + "measuredWidth = " + measuredWidth + "childAt = " + x + "scrollX = " + scrollX + "w ==" + w);
-        if (offset > 0 && position >= (mTableCount - 2)
-                && getChildCount() == mTableCount) {
-            if (mTableCount != 1) {
-                this.scrollTo(((position - (mTableCount - 2)) * tabWidth + (int) (tabWidth * offset)), 0);
-            } else {
-                this.scrollTo((position * tabWidth + (int) (tabWidth * offset)), 0);
-            }
+
+        if (mPositionData == null || mPositionData.isEmpty()) {
+            return;
         }
+        // 手指跟随滚动
+        if (mPositionData.size() > 0 && position >= 0 && position < mPositionData.size()) {
+            int currentPosition = Math.min(mPositionData.size() - 1, position);
+            int nextPosition = Math.min(mPositionData.size() - 1, position + 1);
+            PositionData current = mPositionData.get(currentPosition);
+            PositionData next = mPositionData.get(nextPosition);
+            float scrollTo = current.horizontalCenter() - getScreenWidthPx() * mScrollPivotX;
+            float nextScrollTo = next.horizontalCenter() - getScreenWidthPx() * mScrollPivotX;
+            scrollTo((int) (scrollTo + (nextScrollTo - scrollTo) * offset), 0);
+        }
+
         invalidate();
     }
 
@@ -291,11 +335,33 @@ public class ViewPagerIndicator extends LinearLayout {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mTriangleWidth = (int) (w / mTableCount * mTable_Traigle_Width);
-        mTriangleWidth = Math.min(Max_Traigle_Width, mTriangleWidth);
         initTriangle();
-//        mInitTranslationX = getWidth() / mTableCount / 2 - mTriangleWidth / 2;
-        mInitTranslationX = getChildAt(0).getMeasuredWidth() / 2 - mTriangleWidth / 2;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        preparePositionData();
+    }
+
+    /**
+     * 将每个子控件的属性值存上
+     * 三角形指示器时，滑动指示器时会用到
+     */
+    private void preparePositionData() {
+        mPositionData.clear();
+        for (int i = 0, j = mLinear.getChildCount(); i < j; i++) {
+            PositionData data = new PositionData();
+            View v = mLinear.getChildAt(i);
+            if (v != null) {
+                data.mLeft = v.getLeft();
+                data.mTop = v.getTop();
+                data.mRight = v.getRight();
+                data.mBottom = v.getBottom();
+                mCountWidth += v.getMeasuredWidth();
+            }
+            mPositionData.add(data);
+        }
     }
 
     /**
@@ -339,20 +405,23 @@ public class ViewPagerIndicator extends LinearLayout {
             this.mTitles = titles;
             mTableCount = titles.size();
             for (String title : titles) {
-                // 添加view
-                addView(generateTextView(title));
+                TextView textView = generateTextView(title); // 添加view
+                mLinear.addView(textView);
             }
+            addView(mLinear);
             // 设置item的click事件
             setItemClickEvent();
+            setNormalTitleText();
+            setSelectTitleText(0);
         }
         requestLayout();
     }
 
     private void setItemClickEvent() {
-        int countChild = getChildCount();
+        int countChild = mLinear.getChildCount();
         for (int i = 0; i < countChild; i++) {
             final int j = i;
-            View v = getChildAt(i);
+            View v = mLinear.getChildAt(i);
             v.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -370,13 +439,11 @@ public class ViewPagerIndicator extends LinearLayout {
      * @return
      */
     private TextView generateTextView(String title) {
-        int width = (int) (title.length() * mTitleSize * 2);
         TextView view = new TextView(getContext());
-        LayoutParams lp = new LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
+        view.setText(title);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
         lp.setMargins(20, 0, 20, 0);
         view.setLayoutParams(lp);
-//        view.setLayoutParams(new LayoutParams(getScreenWidthPx() / mTableCount, LayoutParams.MATCH_PARENT));
-        view.setText(title);
         view.setGravity(Gravity.CENTER);
         view.setTextColor(mNormalTitleColor);
         view.setTextSize(mTitleSize);

@@ -57,14 +57,17 @@ public class MainActivity extends BaseMainActivity {
         List<String> list = new ArrayList<>();
         list.add("火锅");
         list.add("清时明月");
+        list.add("清时明月汉时关");
+        list.add("清时明月汉时关万里长征");
+        list.add("清时明月汉时关万里长征人未还");
         list.add("天天");
-        list.add("刚刚好");
-        list.add("刚刚好");
-        list.add("刚刚好");
-        list.add("刚刚好");
-        list.add("刚刚好");
-        list.add("刚刚好");
-        list.add("刚刚好");
+        list.add("刚刚好1");
+        list.add("刚刚好2");
+        list.add("刚刚好3");
+        list.add("刚刚好4");
+        list.add("刚刚好5");
+        list.add("刚刚好6");
+        list.add("刚刚好7");
         mViewPagerIndicator.setmTitles(list);
         initDatas(list);
 
