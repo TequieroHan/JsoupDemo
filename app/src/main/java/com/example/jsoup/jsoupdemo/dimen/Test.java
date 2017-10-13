@@ -1,4 +1,4 @@
-package com.example.jsoup.jsoupdemo.dimenCreate;
+package com.example.jsoup.jsoupdemo.dimen;
 
 import org.xml.sax.SAXException;
 
@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.xml.parsers.ParserConfigurationException;
 

@@ -46,6 +46,21 @@
 -keep public class com.android.vending.licensing.ILicensingService
 -keep class android.support.** {*;}
 
+
+-keep public class com.example.jsoup.jsoupdemo.base{*;}
+-keep public class com.example.jsoup.jsoupdemo.base.activity{*;}
+-keep public class com.example.jsoup.jsoupdemo.base.fragment{*;}
+-keep public com.example.jsoup.jsoupdemo.dimen{*;}
+-keep public com.example.jsoup.jsoupdemo.net{*;}
+-keep public com.example.jsoup.jsoupdemo.ui.fragment{*;}
+-keep public com.example.jsoup.jsoupdemo.ui.home{*;}
+-keep public com.example.jsoup.jsoupdemo.utils{*;}
+-keep public com.example.jsoup.jsoupdemo.view.blank.mobel{*;}
+-keep public com.example.jsoup.jsoupdemo.view.blank{*;}
+-keep public com.example.jsoup.jsoupdemo.view.indicator{*;}
+-keep public com.example.jsoup.jsoupdemo.view.indicator.mobel{*;}
+-keep public com.example.jsoup.jsoupdemo.app{*;}
+
 -keepclasseswithmembernames class * {
     native <methods>;
 }

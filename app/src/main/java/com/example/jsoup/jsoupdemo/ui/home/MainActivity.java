@@ -7,10 +7,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.ArrayMap;
 import android.util.Log;
-import android.view.View;
 
 import com.example.jsoup.jsoupdemo.R;
-import com.example.jsoup.jsoupdemo.base.BaseMainActivity;
+import com.example.jsoup.jsoupdemo.base.activity.BaseMainActivity;
 import com.example.jsoup.jsoupdemo.net.ApiStores;
 import com.example.jsoup.jsoupdemo.net.AppClient;
 import com.example.jsoup.jsoupdemo.net.RetrofitCallback;
@@ -28,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
@@ -46,7 +44,7 @@ public class MainActivity extends BaseMainActivity {
 
     @Override
     public int getLayoutResId() {
-        return R.layout.activity_main1;
+        return R.layout.activity_main;
     }
 
     @Override

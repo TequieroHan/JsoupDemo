@@ -1,5 +1,7 @@
-package com.example.jsoup.jsoupdemo.base;
+package com.example.jsoup.jsoupdemo.base.activity;
 
+import com.example.jsoup.jsoupdemo.base.ActivityManagerImp;
+import com.example.jsoup.jsoupdemo.base.IActivityManager;
 import com.example.jsoup.jsoupdemo.net.ApiStores;
 import com.example.jsoup.jsoupdemo.net.AppClient;
 

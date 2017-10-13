@@ -5,12 +5,9 @@ package com.example.jsoup.jsoupdemo.base;
  * Date: 2016-12-26 {HOUR}:15
  */
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
-
-import com.example.jsoup.jsoupdemo.MyBaseApplication;
 
 import java.io.File;
 import java.io.FileWriter;

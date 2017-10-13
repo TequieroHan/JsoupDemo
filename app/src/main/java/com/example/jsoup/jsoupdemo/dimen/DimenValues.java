@@ -1,4 +1,4 @@
-package com.example.jsoup.jsoupdemo.dimenCreate;
+package com.example.jsoup.jsoupdemo.dimen;
 
 /**
  * Created by chenyo on 2016/1/14.

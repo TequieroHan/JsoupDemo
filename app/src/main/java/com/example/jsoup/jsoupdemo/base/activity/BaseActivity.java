@@ -1,4 +1,4 @@
-package com.example.jsoup.jsoupdemo.base;
+package com.example.jsoup.jsoupdemo.base.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+
+import com.example.jsoup.jsoupdemo.base.IActivityManager;
 
 import butterknife.ButterKnife;
 

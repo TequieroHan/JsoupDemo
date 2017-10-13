@@ -1,51 +1,66 @@
 package com.example.jsoup.jsoupdemo.ui.fragment;
 
+import android.content.ClipData;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.jsoup.jsoupdemo.R;
+import com.example.jsoup.jsoupdemo.base.fragment.BaseFragment;
 
-public class VpSimpleFragment extends Fragment {
+import butterknife.BindView;
+
+public class VpSimpleFragment extends BaseFragment {
     public static final String BUNDLE_TITLE = "title";
     private String mTitle = "DefaultValue";
-    public TextView tvDialog;
+    @BindView(R.id.tv_dialog)
+    TextView tvDialog;
+    @BindView(R.id.rl_content)
+    RelativeLayout rlContent;
+    @BindView(R.id.iv_btn)
+    ImageView ivBtn;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View inflate = inflater.inflate(R.layout.layout_fragment, container, false);
-        tvDialog = (TextView) inflate.findViewById(R.id.tv_dialog);
+    public int getLayoutResId() {
+        return R.layout.layout_fragment;
+    }
+
+    @Override
+    public void initVariable() {
         Bundle arguments = getArguments();
         if (arguments != null) {
             mTitle = arguments.getString(BUNDLE_TITLE);
         }
-        inflate.setOnTouchListener(new View.OnTouchListener() {
+    }
+
+    @Override
+    public void initView() {
+        tvDialog.setText(mTitle);
+
+        ivBtn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                Log.e("TAG", motionEvent.getX() + "---y" + motionEvent.getY());
+                ClipData.Item cDataItem = new ClipData.Item("测试测试");
+
                 return false;
             }
         });
-        int[] location = new int[2];
-        tvDialog.getLocationOnScreen(location);
-        Log.e("TAG", location[0] + "---------" + location[1]);
-        tvDialog.setText(mTitle);
-        tvDialog.setOnClickListener(new View.OnClickListener() {
+
+        rlContent.setOnDragListener(new View.OnDragListener() {
             @Override
-            public void onClick(View view) {
-
-
-
+            public boolean onDrag(View view, DragEvent dragEvent) {
+                return false;
             }
         });
 
-        return inflate;
     }
 
     public static VpSimpleFragment newInstance(String title) {

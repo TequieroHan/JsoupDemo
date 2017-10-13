@@ -1,7 +1,8 @@
-package com.example.jsoup.jsoupdemo;
+package com.example.jsoup.jsoupdemo.app;
 
 import android.app.Application;
 
+import com.example.jsoup.jsoupdemo.BuildConfig;
 import com.example.jsoup.jsoupdemo.base.CrashHandler;
 import com.wzgiceman.rxretrofitlibrary.retrofit_rx.RxRetrofitApp;
 import com.zhy.autolayout.config.AutoLayoutConifg;
