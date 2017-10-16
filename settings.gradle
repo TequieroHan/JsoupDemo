@@ -1,1 +1,1 @@
-include ':app', ':rxretrofitlibrary'
+include ':app', ':rxretrofitlibrary', ':pager-bottom-tab-strip'
