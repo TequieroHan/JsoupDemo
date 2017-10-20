@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'AndResGuard'
 android {
     signingConfigs {
     }
@@ -13,7 +13,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    configurations.all{
+    configurations.all {
         resolutionStrategy.force('com.google.code.findbugs:jsr305:1.3.9')
     }
     buildTypes {
@@ -22,6 +22,58 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.tencent.mm:AndResGuard-gradle-plugin:1.2.6'
+    }
+}
+
+andResGuard {
+    // mappingFile = file("./resource_mapping.txt")
+    mappingFile = null
+    // It will be invalid when you sign apk with schemeV2
+    use7zip = true
+    useSign = true
+    // it will keep the origin path of your resources when it's true
+    keepRoot = false
+
+    whiteList = [
+            // your icon
+            "R.drawable.icon",
+            // for fabric
+            "R.string.com.crashlytics.*",
+            // for google-services
+            "R.string.google_app_id",
+            "R.string.gcm_defaultSenderId",
+            "R.string.default_web_client_id",
+            "R.string.ga_trackingId",
+            "R.string.firebase_database_url",
+            "R.string.google_api_key",
+            "R.string.google_crash_reporting_api_key"
+    ]
+    compressFilePattern = [
+            "*.png",
+            "*.jpg",
+            "*.jpeg",
+            "*.gif",
+            "resources.arsc"
+    ]
+    sevenzip {
+        artifact = 'com.tencent.mm:SevenZip:1.2.6'
+        //path = "/usr/local/bin/7za"
+    }
+
+    /**
+     * Optional: if finalApkBackupPath is null, AndResGuard will overwrite final apk
+     * to the path which assemble[Task] write to
+     **/
+    finalApkBackupPath = "${project.rootDir}/jsoup.apk"
+
 }
 
 dependencies {
