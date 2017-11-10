@@ -1,33 +1,35 @@
 package com.example.jsoup.jsoupdemo.ui.fragment;
 
-import android.content.ClipData;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.DragEvent;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.jsoup.jsoupdemo.R;
 import com.example.jsoup.jsoupdemo.base.fragment.BaseFragment;
+import com.example.jsoup.jsoupdemo.ui.fragment.mobel.MenuInfo;
+import com.example.jsoup.jsoupdemo.view.circelimage.CircelImageView;
+
+import java.util.List;
 
 import butterknife.BindView;
+import fj.mtsortbutton.lib.DynamicSoreView;
+import fj.mtsortbutton.lib.Interface.IDynamicSore;
 
-public class VpSimpleFragment extends BaseFragment {
+public class VpSimpleFragment extends BaseFragment implements IDynamicSore {
     public static final String BUNDLE_TITLE = "title";
     private String mTitle = "DefaultValue";
     @BindView(R.id.tv_dialog)
     TextView tvDialog;
     @BindView(R.id.rl_content)
     RelativeLayout rlContent;
-    @BindView(R.id.iv_btn)
-    ImageView ivBtn;
-
+    @BindView(R.id.checkbox)
+    CircelImageView checkbox;
+    @BindView(R.id.dynamicsoreview)
+    DynamicSoreView dynamicSoreview;
+    private List<MenuInfo> menuInfos;
     @Override
     public int getLayoutResId() {
         return R.layout.layout_fragment;
@@ -44,23 +46,15 @@ public class VpSimpleFragment extends BaseFragment {
     @Override
     public void initView() {
         tvDialog.setText(mTitle);
-
-        ivBtn.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                ClipData.Item cDataItem = new ClipData.Item("测试测试");
-
-                return false;
-            }
-        });
-
+        checkbox.setImageResource(R.drawable.icon_bg);
         rlContent.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View view, DragEvent dragEvent) {
                 return false;
             }
         });
-
+        dynamicSoreview.setiDynamicSore(this);
+        dynamicSoreview.setGridView(R.layout.viewpager_page).init(menuInfos);
     }
 
     public static VpSimpleFragment newInstance(String title) {
@@ -69,5 +63,13 @@ public class VpSimpleFragment extends BaseFragment {
         VpSimpleFragment fragment = new VpSimpleFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void setGridView(View view, int type, List data) {
+        List<MenuInfo> menuInfoList = data;
+        GridView gridView = (GridView)view.findViewById(R.id.gridView);
+        dynamicSoreview.setNumColumns(gridView);
+
     }
 }
